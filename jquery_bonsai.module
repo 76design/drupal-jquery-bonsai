@@ -1,0 +1,114 @@
+<?php
+
+function jquery_bonsai_libraries_info() {
+	return [
+		'jquery-bonsai' => [
+			'name'              => 'jQuery Bonsai',
+			'vendor url'        => 'https://github.com/aexmachina/jquery-bonsai',
+			'download url'      => 'https://github.com/aexmachina/jquery-bonsai/releases',
+			'version arguments' => [
+				'file'    => 'bower.json',
+				'pattern' => '/version\"\:\s+\"([^\"]+)/',
+				'lines'   => 10,
+			],
+			'files'             => [
+				'js'  => [
+					'jquery.bonsai.js',
+				],
+				'css' => [
+					'jquery.bonsai.css',
+				],
+			],
+			'dependencies'      => [
+				'jquery-qubit',
+			],
+		],
+		'jquery-qubit'  => [
+			'name'              => 'jQuery Qubit',
+			'vendor url'        => 'https://github.com/aexmachina/jquery-qubit',
+			'download url'      => 'https://github.com/aexmachina/jquery-qubit/releases',
+			'version arguments' => [
+				'file'    => 'bower.json',
+				'pattern' => '/version\"\:\s+\"([^\"]+)/',
+				'lines'   => 10,
+			],
+			'files'             => [
+				'js' => [
+					'jquery.qubit.js',
+				],
+			],
+		],
+	];
+}
+
+function jquery_bonsai_requirements($phase) {
+	$requirements = [];
+	if ($phase == 'runtime') {
+		$jquery_qubit = ($qubit_library = libraries_detect('jquery-qubit')) && !empty($qubit_library['installed']);
+		$jquery_bonsai = ($bonsai_library = libraries_detect('jquery-bonsai')) && !empty($bonsai_library['installed']);
+
+		if (!$jquery_qubit) {
+			$desc = !empty($qubit_library['error message']) ? $qubit_library['error message'] : t('Could not find the jquery-qubit library.');
+			$requirements['jquery_bonsai_qubit'] = [
+				'title'    => t('jQuery Qubit'),
+				'value'    => $desc,
+				'severity' => REQUIREMENT_ERROR,
+			];
+		} else {
+			$requirements['jquery_bonsai_qubit'] = [
+				'title'    => t('jQuery Qubit'),
+				'value'    => t('Installed @version', ['@version' => $qubit_library['version'],]),
+				'severity' => REQUIREMENT_OK,
+			];
+		}
+
+		if (!$jquery_bonsai) {
+			$desc = !empty($bonsai_library['error message']) ? $bonsai_library['error message'] : t('Could not find the jquery-bonsai library.');
+			$requirements['jquery_bonsai'] = [
+				'title'    => t('jQuery Bonsai'),
+				'value'    => $desc,
+				'severity' => REQUIREMENT_ERROR,
+			];
+		} else {
+			$requirements['jquery_bonsai'] = [
+				'title'    => t('jQuery Bonsai'),
+				'value'    => t('Installed @version', ['@version' => $bonsai_library['version'],]),
+				'severity' => REQUIREMENT_OK,
+			];
+		}
+	}
+
+	return $requirements;
+}
+
+function jquery_bonsai_loaded() {
+	return ($library = libraries_load('jquery-bonsai')) && !empty($library['loaded']);
+}
+
+/**
+ * @param $container
+ *  CSS Selector to apply jquery.bonsai to.
+ *
+ * @param array $options
+ */
+function jquery_bonsai_apply($container, $options = []) {
+	if (jquery_bonsai_loaded() && !empty($container)) {
+		//TODO: Validate options.
+		$jquery_bonsai = [
+			'jquery_bonsai' => [
+				$container => (object)$options,
+			],
+		];
+
+		$script_file = drupal_get_path('module', 'jquery_bonsai') . '/jquery_bonsai.js';
+		$css_file = drupal_get_path('module', 'jquery_bonsai') . '/jquery_bonsai.css';
+
+		$context = compact('container', 'options');
+
+		drupal_alter('jquery_bonsai_script', $jquery_bonsai, $script_file, $context);
+
+		drupal_add_js($jquery_bonsai, 'setting');
+		drupal_add_js($script_file);
+		drupal_add_css($css_file);
+	}
+}

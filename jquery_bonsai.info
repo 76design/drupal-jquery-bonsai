@@ -1,0 +1,5 @@
+name = jQuery Bonsai
+description = Super lightweight jQuery tree plugin http://aexmachina.info/jquery-bonsai.
+core = 7.x
+dependencies[] = libraries
+files[] = jquery_bonsai.module

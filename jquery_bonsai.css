@@ -1,0 +1,17 @@
+.form-item .bonsai {
+    margin: 0;
+}
+
+.bonsai .form-item, .bonsai .form-item .form-item {
+    padding: 0 !important;
+}
+
+.bonsai .bonsai {
+    margin-bottom: 0.5em;
+}
+
+.bonsai li .thumb {
+    font-size: 20px;
+    margin-left: -15px;
+    font-family: monospace;
+}
