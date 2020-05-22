@@ -9,7 +9,6 @@ projects[libraries] = 2
 ; Libraries
 libraries[jquery_bonsai][download][type] = "git"
 libraries[jquery_bonsai][download][url] = "https://github.com/aexmachina/jquery-bonsai.git"
-libraries[jquery_bonsai][download][tag] = "v2.0.0"
 libraries[jquery_bonsai][directory_name] = "jquery-bonsai"
 
 libraries[jquery_qubit][download][type] = "git"
